@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -6,8 +6,8 @@
 <title>Curso de Técnica Vocal — Musicalize</title>
 <style>
 :root{
-  --ink:#16202A; --ink-soft:#3C4A57; --paper:#FAF7F2; --paper-2:#F0EBE0;
-  --gold:#C98A3E; --gold-dark:#8C5C20; --teal:#2F6F6B; --teal-dark:#1E4E4B; --line:#DCD4C2;
+  --ink:#0B0D10; --ink-soft:#3C4A57; --paper:#FAF7F2; --paper-2:#F0EBE0;
+  --gold:#E8562E; --gold-dark:#C23F1D; --teal:#2F6F6B; --teal-dark:#1E4E4B; --line:#DCD4C2;
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;}
@@ -20,7 +20,7 @@ header.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5
 .hero-badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gold);
   background:rgba(201,138,63,.12);border:1px solid rgba(201,138,63,.35);padding:5px 12px;border-radius:20px;margin-bottom:14px;}
 .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;}
-h1{font-family:Georgia,serif;font-size:clamp(26px,5vw,40px);margin:10px 0 14px;font-weight:700;line-height:1.15;}
+h1{font-family:Georgia,serif;font-size:clamp(30px,6vw,52px);margin:10px 0 14px;font-weight:800;line-height:1.05;letter-spacing:-.01em;}
 .lede{font-size:16px;color:#CCD4D8;max-width:560px;}
 .waveform{display:flex;align-items:flex-end;gap:3px;height:24px;margin:24px 0;}
 .waveform span{display:block;width:3px;background:var(--gold);opacity:.85;border-radius:2px;}
@@ -28,7 +28,7 @@ h1{font-family:Georgia,serif;font-size:clamp(26px,5vw,40px);margin:10px 0 14px;f
 .hstat{display:flex;flex-direction:column;}
 .hstat strong{font-family:Georgia,serif;font-size:26px;color:var(--gold);line-height:1;}
 .hstat span{font-size:11.5px;color:#AEB9BE;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
-main{padding:48px 0 70px;}
+main.wrap{padding:48px 22px 70px;}
 section{margin-bottom:44px;}
 h2{font-family:Georgia,serif;font-size:21px;margin:0 0 14px;}
 p{font-size:15px;color:var(--ink-soft);margin:0 0 10px;max-width:640px;}
@@ -36,6 +36,11 @@ p{font-size:15px;color:var(--ink-soft);margin:0 0 10px;max-width:640px;}
 @media(max-width:600px){.modgrid{grid-template-columns:1fr;}}
 .modcard{border:1px solid var(--line);border-radius:10px;padding:18px 18px;background:#fff;display:flex;gap:14px;align-items:center;text-decoration:none;color:inherit;transition:border-color .15s, transform .15s;}
 .modcard:hover{border-color:var(--teal);transform:translateY(-2px);}
+.featcard{border-radius:12px;padding:20px 18px;color:#fff;background:linear-gradient(150deg,var(--ink),#232830);position:relative;overflow:hidden;}
+.featcard::after{content:"";position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(232,86,46,.35),transparent 70%);}
+.featcard .icon{font-size:24px;display:block;margin-bottom:10px;position:relative;}
+.featcard h3{font-size:14.5px;margin:0 0 5px;font-family:Georgia,serif;color:#fff;position:relative;}
+.featcard p{font-size:13px;margin:0;color:#C9D1D6;position:relative;}
 .modcard .bignum{font-family:Georgia,serif;font-size:30px;font-weight:700;color:var(--paper-2);
   -webkit-text-stroke:1.5px var(--gold);flex:0 0 auto;width:44px;text-align:center;}
 .modcard .modtext{flex:1;}
@@ -52,11 +57,38 @@ p{font-size:15px;color:var(--ink-soft);margin:0 0 10px;max-width:640px;}
 <body>
 <header class="hero">
   <div class="hero-inner">
+    <svg viewBox="0 0 700 160" style="width:100%;max-width:420px;display:block;margin:0 0 20px;" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#E8562E" stop-opacity=".55"/>
+          <stop offset="100%" stop-color="#E8562E" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="350" cy="80" r="150" fill="url(#glow)"/>
+      <rect x="322" y="20" width="56" height="90" rx="28" fill="#F0EBE0"/>
+      <rect x="340" y="105" width="20" height="30" fill="#F0EBE0"/>
+      <rect x="315" y="132" width="70" height="10" rx="5" fill="#F0EBE0"/>
+      <path d="M290 55 a60 60 0 0 0 120 0" stroke="#E8562E" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <g stroke="#E8562E" stroke-width="5" stroke-linecap="round">
+        <line x1="120" y1="80" x2="120" y2="80"/>
+        <line x1="150" y1="60" x2="150" y2="100"/>
+        <line x1="175" y1="45" x2="175" y2="115"/>
+        <line x1="200" y1="65" x2="200" y2="95"/>
+        <line x1="225" y1="35" x2="225" y2="125"/>
+        <line x1="250" y1="55" x2="250" y2="105"/>
+        <line x1="450" y1="55" x2="450" y2="105"/>
+        <line x1="475" y1="35" x2="475" y2="125"/>
+        <line x1="500" y1="65" x2="500" y2="95"/>
+        <line x1="525" y1="45" x2="525" y2="115"/>
+        <line x1="550" y1="60" x2="550" y2="100"/>
+        <line x1="580" y1="80" x2="580" y2="80"/>
+      </g>
+    </svg>
     <div class="hero-badge">🎙️ Musicalize Escola de Música</div>
     <h1>Curso de Técnica Vocal</h1>
     <p class="lede">48 aulas interativas, organizadas em 6 módulos progressivos — da respiração aos sub-registros do belting contemporâneo. Cada aula traz conteúdo explicado, exercícios práticos e um quiz para consolidar o aprendizado.</p>
     <div class="herostats">
-      <div class="hstat"><strong>40</strong><span>aulas</span></div>
+      <div class="hstat"><strong>48</strong><span>aulas</span></div>
       <div class="hstat"><strong>6</strong><span>módulos</span></div>
       <div class="hstat"><strong>100%</strong><span>prático</span></div>
     </div>
@@ -72,7 +104,15 @@ p{font-size:15px;color:var(--ink-soft);margin:0 0 10px;max-width:640px;}
   </section>
 
   <section>
-    <h2>Os 6 módulos</h2>
+    <h2>Por que este formato</h2>
+    <div class="modgrid">
+      <div class="featcard"><span class="icon">🎓</span><h3>Progresso salvo</h3><p>Entre com seu e-mail e continue de onde parou, em qualquer dispositivo.</p></div>
+      <div class="featcard"><span class="icon">🔒</span><h3>Sequência guiada</h3><p>Aulas destravam uma a uma — sem pular etapas, sem lacunas na base técnica.</p></div>
+      <div class="featcard"><span class="icon">✅</span><h3>Quiz em cada aula</h3><p>Fixação imediata do conteúdo antes de seguir para o próximo assunto.</p></div>
+      <div class="featcard"><span class="icon">👩‍🏫</span><h3>Modo Professor</h3><p>Camada extra de aprofundamento e referências, ativável a qualquer momento.</p></div>
+    </div>
+  </section>
+
   <section>
     <h2>Comece agora</h2>
     <p>48 aulas, 6 módulos, progresso salvo automaticamente — acesse o painel, faça login com seu nome e e-mail, e continue de onde parou a qualquer momento.</p>
@@ -89,7 +129,26 @@ p{font-size:15px;color:var(--ink-soft);margin:0 0 10px;max-width:640px;}
       <div class="step"><div class="stepnum">3</div><p>Ao concluir todas as aulas do módulo, a avaliação final é liberada, consolidando o conteúdo estudado.</p></div>
     </div>
   </section>
+
+  <section>
+    <h2>Quem ministra o curso</h2>
+    <div class="featcard" style="display:flex;gap:16px;align-items:center;">
+      <div style="width:56px;height:56px;border-radius:50%;background:var(--gold);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:22px;font-weight:700;color:#241500;">RW</div>
+      <div>
+        <h3 style="font-size:16px;">Robson Wylliams</h3>
+        <p>Graduado em Pedagogia (UniFanor), pós-graduado em Psicopedagogia, Musicoterapia e Psicanálise. Acadêmico em Fonoaudiologia, com especializações em cuidados e controle da voz.</p>
+      </div>
+    </div>
+  </section>
 </main>
+
+<footer style="background:var(--ink);color:#C9D1D6;padding:40px 22px;text-align:center;font-size:12.5px;">
+  <p style="color:#fff;font-weight:700;font-size:15px;margin:0 0 4px;letter-spacing:.04em;">MUSICALIZE</p>
+  <p style="margin:0 0 4px;">Escola de Música com método, palco e experiência real</p>
+  <p style="margin:0;">
+    <a href="https://www.escolamusicalize.com/" style="color:#C9D1D6;margin:0 8px;">escolamusicalize.com</a>
+  </p>
+</footer>
 
 <script>
 for(let i=0;i<28;i++){
