@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Painel — Curso de Técnica Vocal</title>
+<script src="curso-data.js"></script>
+<style>
+:root{
+  --ink:#16202A; --ink-soft:#3C4A57; --paper:#FAF7F2; --paper-2:#F0EBE0;
+  --gold:#C98A3E; --gold-dark:#8C5C20; --teal:#2F6F6B; --teal-dark:#1E4E4B; --line:#DCD4C2;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px 80px;}
+header.top{background:var(--ink);color:#fff;padding:40px 22px 60px;position:relative;overflow:hidden;}
+header.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--gold),var(--teal));}
+.top-inner{max-width:820px;margin:0 auto;}
+.eyebrow{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+h1{font-family:Georgia,serif;font-size:26px;margin:6px 0 18px;}
+.overallbar{height:10px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;}
+.overallfill{height:100%;background:var(--gold);width:0%;}
+.overalllabel{font-size:13px;color:#C9D1D6;margin-top:8px;}
+.dashcard{background:#fff;border:1px solid var(--line);border-radius:12px;margin-top:-30px;padding:22px 24px;position:relative;z-index:2;}
+.continuebtn{display:inline-block;margin-top:8px;font:inherit;font-weight:700;font-size:14px;padding:12px 22px;border-radius:7px;border:none;background:var(--gold);color:#241500;text-decoration:none;}
+.continuebtn:hover{background:var(--gold-dark);color:#fff;}
+.modlist{margin-top:34px;display:flex;flex-direction:column;gap:12px;}
+.modrow{display:flex;align-items:center;gap:16px;border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:#fff;}
+.modrow.locked{opacity:.55;}
+.modnum{font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--gold-dark);width:34px;text-align:center;flex:0 0 auto;}
+.modinfo{flex:1;}
+.modinfo h3{font-size:14.5px;margin:0 0 4px;font-family:Georgia,serif;}
+.modbar{height:6px;background:var(--paper-2);border-radius:4px;overflow:hidden;}
+.modbarfill{height:100%;background:var(--teal);}
+.modmeta{font-size:11.5px;color:var(--ink-soft);margin-top:4px;}
+.modlink{font-size:12.5px;font-weight:700;color:var(--teal-dark);text-decoration:none;white-space:nowrap;}
+.gatebox{max-width:380px;margin:70px auto;text-align:center;}
+.gatebox input{width:100%;font:inherit;font-size:14px;padding:11px 12px;border-radius:7px;border:1px solid var(--line);margin-bottom:9px;}
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div id="view-gate"></div>
+<div id="view-dash" class="hidden">
+  <header class="top">
+    <div class="top-inner">
+      <div class="eyebrow">Musicalize · Curso de Técnica Vocal</div>
+      <h1 id="greeting">Olá!</h1>
+      <div class="overallbar"><div class="overallfill" id="overallfill"></div></div>
+      <div class="overalllabel" id="overalllabel"></div>
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="dashcard">
+      <p style="margin:0 0 4px;font-size:13.5px;color:var(--ink-soft);">Continue de onde parou:</p>
+      <a class="continuebtn" id="continuebtn" href="#">Continuar aula</a>
+    </div>
+    <div class="modlist" id="modlist"></div>
+  </div>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTuXuWk1BiQdUWdYsZNdmjQ5Nt00d653cK15DSVUhjSsM5qkF8yJ6F0iZ_6qfGUJSMNw/exec";
+
+const FLAT = [];
+COURSE.modules.forEach(mod=>{
+  mod.lessons.forEach(lesson=>{ FLAT.push({ n: FLAT.length+1, moduleId: mod.id, lesson }); });
+});
+
+function el(tag, attrs={}, ...children){
+  const e = document.createElement(tag);
+  for(const k in attrs){
+    if(attrs[k]===null || attrs[k]===undefined) continue;
+    if(k==='html') e.innerHTML = attrs[k];
+    else if(k.startsWith('on')) e.addEventListener(k.slice(2), attrs[k]);
+    else e.setAttribute(k, attrs[k]);
+  }
+  children.flat().forEach(c=>{ if(c) e.appendChild(typeof c==='string'?document.createTextNode(c):c); });
+  return e;
+}
+
+async function loadDashboard(nome, email){
+  document.getElementById('greeting').textContent = 'Olá, '+nome+'!';
+  let completed = [];
+  try{
+    const res = await fetch(APPS_SCRIPT_URL, {method:'GET'});
+    const json = await res.json();
+    const prog = json.progresso && json.progresso[email.toLowerCase()];
+    completed = prog ? prog.completed : [];
+  }catch(e){ console.error(e); }
+
+  const totalPct = Math.round((completed.length/FLAT.length)*100);
+  document.getElementById('overallfill').style.width = totalPct+'%';
+  document.getElementById('overalllabel').textContent = completed.length+' de '+FLAT.length+' aulas concluídas ('+totalPct+'%)';
+
+  const nextLesson = FLAT.find(f=>!completed.includes(f.n)) || FLAT[FLAT.length-1];
+  const contBtn = document.getElementById('continuebtn');
+  contBtn.href = 'aula.html?n='+nextLesson.n;
+  contBtn.textContent = completed.length===0 ? 'Começar Aula 1' : ('Continuar — Aula '+nextLesson.n);
+
+  const modlist = document.getElementById('modlist');
+  modlist.innerHTML='';
+  let prevModDone = true;
+  COURSE.modules.forEach(mod=>{
+    const modLessons = FLAT.filter(f=>f.moduleId===mod.id);
+    const modDone = modLessons.filter(f=>completed.includes(f.n)).length;
+    const modPct = Math.round((modDone/modLessons.length)*100);
+    const locked = !prevModDone;
+    const firstN = modLessons[0].n;
+    const row = el('div',{class:'modrow'+(locked?' locked':'')},
+      el('div',{class:'modnum'}, String(mod.id).padStart(2,'0')),
+      el('div',{class:'modinfo'},
+        el('h3',{}, mod.title),
+        el('div',{class:'modbar'}, el('div',{class:'modbarfill', style:'width:'+modPct+'%;'})),
+        el('div',{class:'modmeta'}, modDone+'/'+modLessons.length+' aulas · '+modPct+'%')
+      ),
+      locked ? el('span',{class:'modlink'},'🔒 Bloqueado') : el('a',{class:'modlink', href:'aula.html?n='+firstN}, modPct===100?'Revisar →':'Acessar →')
+    );
+    modlist.appendChild(row);
+    prevModDone = modDone === modLessons.length;
+  });
+}
+
+function startGate(){
+  const gate = document.getElementById('view-gate');
+  const savedNome = localStorage.getItem('curso_nome')||'';
+  const savedEmail = localStorage.getItem('curso_email')||'';
+  if(savedNome && savedEmail){
+    gate.classList.add('hidden');
+    document.getElementById('view-dash').classList.remove('hidden');
+    loadDashboard(savedNome, savedEmail);
+    return;
+  }
+  const nomeInp = el('input',{type:'text',placeholder:'Seu nome'});
+  const emailInp = el('input',{type:'email',placeholder:'Seu e-mail'});
+  const btn = el('button',{style:'width:100%;font:inherit;font-weight:700;font-size:14px;padding:12px;border-radius:7px;border:none;background:var(--gold);cursor:pointer;'},'Entrar');
+  gate.appendChild(el('div',{class:'gatebox'},
+    el('h1',{style:'font-family:Georgia,serif;font-size:22px;'},'Meu Painel'),
+    nomeInp, emailInp, btn));
+  btn.addEventListener('click', ()=>{
+    const nome=nomeInp.value.trim(), email=emailInp.value.trim();
+    if(!nome || !email.includes('@')) return;
+    localStorage.setItem('curso_nome', nome);
+    localStorage.setItem('curso_email', email);
+    gate.classList.add('hidden');
+    document.getElementById('view-dash').classList.remove('hidden');
+    loadDashboard(nome, email);
+  });
+}
+startGate();
+</script>
+</body>
+</html>

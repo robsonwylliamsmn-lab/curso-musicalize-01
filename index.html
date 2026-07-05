@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curso de Técnica Vocal — Musicalize</title>
+<style>
+:root{
+  --ink:#16202A; --ink-soft:#3C4A57; --paper:#FAF7F2; --paper-2:#F0EBE0;
+  --gold:#C98A3E; --gold-dark:#8C5C20; --teal:#2F6F6B; --teal-dark:#1E4E4B; --line:#DCD4C2;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px;}
+header.hero{background:var(--ink);color:var(--paper);padding:64px 22px 56px;position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,138,63,.18),transparent 70%);}
+header.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--gold),var(--teal));}
+.hero-inner{max-width:760px;margin:0 auto;position:relative;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gold);
+  background:rgba(201,138,63,.12);border:1px solid rgba(201,138,63,.35);padding:5px 12px;border-radius:20px;margin-bottom:14px;}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+h1{font-family:Georgia,serif;font-size:clamp(26px,5vw,40px);margin:10px 0 14px;font-weight:700;line-height:1.15;}
+.lede{font-size:16px;color:#CCD4D8;max-width:560px;}
+.waveform{display:flex;align-items:flex-end;gap:3px;height:24px;margin:24px 0;}
+.waveform span{display:block;width:3px;background:var(--gold);opacity:.85;border-radius:2px;}
+.herostats{display:flex;gap:28px;margin-top:22px;}
+.hstat{display:flex;flex-direction:column;}
+.hstat strong{font-family:Georgia,serif;font-size:26px;color:var(--gold);line-height:1;}
+.hstat span{font-size:11.5px;color:#AEB9BE;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+main{padding:48px 0 70px;}
+section{margin-bottom:44px;}
+h2{font-family:Georgia,serif;font-size:21px;margin:0 0 14px;}
+p{font-size:15px;color:var(--ink-soft);margin:0 0 10px;max-width:640px;}
+.modgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+@media(max-width:600px){.modgrid{grid-template-columns:1fr;}}
+.modcard{border:1px solid var(--line);border-radius:10px;padding:18px 18px;background:#fff;display:flex;gap:14px;align-items:center;text-decoration:none;color:inherit;transition:border-color .15s, transform .15s;}
+.modcard:hover{border-color:var(--teal);transform:translateY(-2px);}
+.modcard .bignum{font-family:Georgia,serif;font-size:30px;font-weight:700;color:var(--paper-2);
+  -webkit-text-stroke:1.5px var(--gold);flex:0 0 auto;width:44px;text-align:center;}
+.modcard .modtext{flex:1;}
+.modcard .lessons{display:block;font-size:11.5px;font-weight:700;color:var(--teal-dark);text-transform:uppercase;letter-spacing:.03em;}
+.modcard h3{font-size:15px;margin:2px 0 0;font-family:Georgia,serif;}
+.modcard .arrow{opacity:0;transform:translateX(-4px);transition:.15s;color:var(--gold-dark);font-weight:700;}
+.modcard:hover .arrow{opacity:1;transform:translateX(0);}
+.stepslist{display:flex;flex-direction:column;gap:14px;margin-top:14px;}
+.step{display:flex;gap:14px;align-items:flex-start;}
+.stepnum{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--paper-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-family:Georgia,serif;color:var(--gold-dark);font-size:13px;}
+.step p{margin:0;font-size:13.5px;}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🎙️ Musicalize Escola de Música</div>
+    <h1>Curso de Técnica Vocal</h1>
+    <p class="lede">48 aulas interativas, organizadas em 6 módulos progressivos — da respiração aos sub-registros do belting contemporâneo. Cada aula traz conteúdo explicado, exercícios práticos e um quiz para consolidar o aprendizado.</p>
+    <div class="herostats">
+      <div class="hstat"><strong>40</strong><span>aulas</span></div>
+      <div class="hstat"><strong>6</strong><span>módulos</span></div>
+      <div class="hstat"><strong>100%</strong><span>prático</span></div>
+    </div>
+    <div class="waveform" id="wave"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h2>Sobre o curso</h2>
+    <p>Este curso transforma a apostila de Técnica Vocal da Musicalize em uma experiência interativa: cada assunto vira uma aula com explicações organizadas em cards, exercícios práticos com números e protocolos exatos, e um quiz misto para verificar o que foi absorvido.</p>
+    <p>Um botão "Modo Professor" em cada aula libera anotações extras de aprofundamento — para quem ensina, não só para quem aprende.</p>
+  </section>
+
+  <section>
+    <h2>Os 6 módulos</h2>
+  <section>
+    <h2>Comece agora</h2>
+    <p>48 aulas, 6 módulos, progresso salvo automaticamente — acesse o painel, faça login com seu nome e e-mail, e continue de onde parou a qualquer momento.</p>
+    <a class="modcard" href="painel.html" style="max-width:320px;justify-content:center;text-align:center;padding:22px;">
+      <span class="modtext"><h3>Acessar o Painel do Aluno →</h3></span>
+    </a>
+  </section>
+
+  <section>
+    <h2>Como funciona</h2>
+    <div class="stepslist">
+      <div class="step"><div class="stepnum">1</div><p>Escolha um módulo e avance aula por aula, lendo os cards e fazendo o quiz ao final de cada assunto.</p></div>
+      <div class="step"><div class="stepnum">2</div><p>Acerte as questões de múltipla escolha (correção automática) e responda a pergunta aberta de reflexão.</p></div>
+      <div class="step"><div class="stepnum">3</div><p>Ao concluir todas as aulas do módulo, a avaliação final é liberada, consolidando o conteúdo estudado.</p></div>
+    </div>
+  </section>
+</main>
+
+<script>
+for(let i=0;i<28;i++){
+  const h = 6 + Math.round(Math.abs(Math.sin(i*0.7))*20);
+  const s = document.createElement('span'); s.style.height = h+'px';
+  document.getElementById('wave').appendChild(s);
+}
+</script>
+</body>
+</html>
