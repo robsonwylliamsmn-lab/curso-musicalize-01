@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel do Professor — Curso de Técnica Vocal</title>
+<script src="curso-data.js"></script>
+<style>
+:root{
+  --ink:#0B0D10; --ink-soft:#3C4A57; --paper:#FAF7F2; --paper-2:#F0EBE0;
+  --gold:#E8562E; --gold-dark:#C23F1D; --teal:#2F6F6B; --teal-dark:#1E4E4B; --line:#DCD4C2; --green:#3C7A4A;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px 80px;}
+header.top{background:var(--ink);color:#fff;padding:34px 22px 26px;}
+.tabs{display:flex;gap:8px;margin-top:18px;}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:9px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;cursor:pointer;}
+.tabs button.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+section.card{background:#fff;border:1px solid var(--line);border-radius:10px;margin-top:22px;padding:22px 24px;}
+section.card h2{font-family:Georgia,serif;font-size:18px;margin:0 0 4px;}
+.sec-hint{font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;}
+.modrow{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--paper-2);}
+.modrow:last-child{border-bottom:none;}
+.modrow .mtitle{flex:1;font-size:13.5px;font-weight:600;}
+.modrow input[type=date]{font:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;}
+.modrow .status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.status.open{background:#E6F1E9;color:var(--green);}
+.status.sched{background:#FBEFE0;color:var(--gold-dark);}
+button.savebtn{font:inherit;font-weight:700;font-size:12px;padding:7px 14px;border-radius:6px;border:none;background:var(--teal);color:#fff;cursor:pointer;}
+.studentlist{display:flex;flex-direction:column;gap:8px;}
+.studentcard{border:1px solid var(--line);border-radius:8px;padding:12px 14px;cursor:pointer;background:var(--paper);}
+.studentcard:hover{border-color:var(--teal);}
+.studentcard .sname{font-weight:700;font-size:13.5px;}
+.studentcard .smeta{font-size:11.5px;color:var(--ink-soft);}
+.lessonchip{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin:4px 6px 0 0;background:var(--paper-2);color:var(--ink-soft);cursor:pointer;border:1px solid var(--line);}
+.lessonchip.done{background:#E6F1E9;color:var(--green);border-color:var(--green);}
+.lessonchip.fb{background:#FBEFE0;color:var(--gold-dark);border-color:var(--gold-dark);}
+.qa{border-bottom:1px solid var(--paper-2);padding:10px 0;}
+.qa .q{font-size:12px;font-weight:700;color:var(--ink-soft);}
+.qa .a{font-size:13.5px;margin-top:3px;white-space:pre-wrap;}
+.fbbox{margin-top:14px;padding:14px;background:var(--paper-2);border-radius:8px;}
+.fbbox textarea{width:100%;min-height:70px;font:inherit;font-size:13px;padding:9px;border:1px solid var(--line);border-radius:6px;margin-top:6px;}
+.fbbox input[type=number]{font:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;width:80px;}
+.backbtn{background:none;border:none;color:var(--teal);font-weight:700;font-size:13px;cursor:pointer;padding:0 0 12px;}
+.hidden{display:none !important;}
+.gatebox{max-width:340px;margin:70px auto;text-align:center;}
+.gatebox input{width:100%;font:inherit;font-size:14px;padding:11px 12px;border-radius:7px;border:1px solid var(--line);margin-bottom:9px;}
+</style>
+</head>
+<body>
+<div id="view-gate" class="wrap"></div>
+<div id="view-app" class="hidden">
+<header class="top">
+  <div class="wrap">
+    <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700;">Musicalize · Curso de Técnica Vocal</div>
+    <h1 style="font-family:Georgia,serif;font-size:24px;margin:6px 0 0;">Painel do Professor</h1>
+    <div class="tabs">
+      <button id="tab-cron" class="active">Cronograma</button>
+      <button id="tab-corr">Correções</button>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <div id="view-cron"></div>
+  <div id="view-corr" class="hidden"></div>
+</div>
+</div>
+
+<script>
+const TEACHER_CODE = "vocologia2026";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw79vXg5L6oslYXJ2oDQmO9m1EMzAWBUMv8OVBlS7kk-63oCgrjpTFJcnsUobBkJK9O/exec";
+
+const FLAT = [];
+COURSE.modules.forEach(mod=>{ mod.lessons.forEach(lesson=>{ FLAT.push({ n: FLAT.length+1, moduleId: mod.id, moduleTitle: mod.title, lesson }); }); });
+
+function el(tag, attrs={}, ...children){
+  const e = document.createElement(tag);
+  for(const k in attrs){
+    if(attrs[k]===null||attrs[k]===undefined) continue;
+    if(k==='html') e.innerHTML = attrs[k];
+    else if(k.startsWith('on')) e.addEventListener(k.slice(2), attrs[k]);
+    else e.setAttribute(k, attrs[k]);
+  }
+  children.flat().forEach(c=>{ if(c) e.appendChild(typeof c==='string'?document.createTextNode(c):c); });
+  return e;
+}
+
+let CACHE = {};
+async function loadAll(){
+  const res = await fetch(APPS_SCRIPT_URL, {method:'GET'});
+  CACHE = await res.json();
+}
+
+function renderCronograma(){
+  const box = document.getElementById('view-cron');
+  box.innerHTML = '';
+  const card = el('section',{class:'card'});
+  card.appendChild(el('h2',{},'Cronograma de liberação por módulo'));
+  card.appendChild(el('p',{class:'sec-hint'},'Defina a partir de qual data cada módulo fica disponível. Deixe em branco para liberar imediatamente. As aulas dentro do módulo continuam destravando uma a uma conforme o aluno conclui os quizzes.'));
+  COURSE.modules.forEach(mod=>{
+    const today = new Date().toISOString().slice(0,10);
+    const savedDate = CACHE.cronograma && CACHE.cronograma[mod.id];
+    const isLocked = savedDate && savedDate > today;
+    const row = el('div',{class:'modrow'});
+    row.appendChild(el('span',{class:'mtitle'}, 'Módulo '+mod.id+' — '+mod.title));
+    row.appendChild(el('span',{class:'status '+(isLocked?'sched':'open')}, isLocked ? 'Programado' : 'Liberado'));
+    const dateInp = el('input',{type:'date', value: savedDate||''});
+    row.appendChild(dateInp);
+    const btn = el('button',{class:'savebtn'},'Salvar');
+    btn.addEventListener('click', async ()=>{
+      btn.disabled = true; btn.textContent = 'Salvando...';
+      await fetch(APPS_SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({type:'schedule', moduleId: mod.id, releaseDate: dateInp.value})});
+      CACHE.cronograma = CACHE.cronograma || {};
+      CACHE.cronograma[mod.id] = dateInp.value;
+      btn.textContent = 'Salvo ✓';
+      setTimeout(()=>renderCronograma(), 700);
+    });
+    row.appendChild(btn);
+    card.appendChild(row);
+  });
+  box.appendChild(card);
+}
+
+function renderCorrecoesList(){
+  const box = document.getElementById('view-corr');
+  box.innerHTML = '';
+  const card = el('section',{class:'card'});
+  card.appendChild(el('h2',{},'Alunos'));
+  card.appendChild(el('p',{class:'sec-hint'},'Clique em um aluno para ver as aulas concluídas e adicionar comentários/pontuação.'));
+  const list = el('div',{class:'studentlist'});
+  const emails = Object.keys(CACHE.progresso || {});
+  if(emails.length===0){ list.appendChild(el('p',{class:'sec-hint'},'Nenhum aluno com progresso ainda.')); }
+  emails.forEach(email=>{
+    const p = CACHE.progresso[email];
+    const c = el('div',{class:'studentcard', onclick:()=>renderStudentDetail(email)},
+      el('div',{class:'sname'}, p.studentName || email),
+      el('div',{class:'smeta'}, email+' · '+p.completed.length+'/'+FLAT.length+' aulas concluídas'));
+    list.appendChild(c);
+  });
+  card.appendChild(list);
+  box.appendChild(card);
+}
+
+function renderStudentDetail(email){
+  const box = document.getElementById('view-corr');
+  box.innerHTML = '';
+  const p = CACHE.progresso[email];
+  box.appendChild(el('button',{class:'backbtn', onclick:renderCorrecoesList},'← Voltar para lista de alunos'));
+  const card = el('section',{class:'card'});
+  card.appendChild(el('h2',{}, p.studentName || email));
+  card.appendChild(el('p',{class:'sec-hint'}, email));
+  const chipsWrap = el('div',{});
+  p.completed.slice().sort((a,b)=>a-b).forEach(n=>{
+    const fbKey = email.toLowerCase()+'_'+n;
+    const hasFb = CACHE.feedback && CACHE.feedback[fbKey];
+    const chip = el('span',{class:'lessonchip done'+(hasFb?' fb':''), onclick:()=>renderLessonReview(email, n)}, 'Aula '+n+(hasFb?' ✓ com nota':''));
+    chipsWrap.appendChild(chip);
+  });
+  card.appendChild(chipsWrap);
+  box.appendChild(card);
+}
+
+function renderLessonReview(email, n){
+  const box = document.getElementById('view-corr');
+  box.innerHTML = '';
+  box.appendChild(el('button',{class:'backbtn', onclick:()=>renderStudentDetail(email)},'← Voltar para o aluno'));
+  const item = FLAT.find(f=>f.n===n);
+
+  const card = el('section',{class:'card'});
+  card.appendChild(el('h2',{}, 'Aula '+n+' — '+item.lesson.title));
+  card.appendChild(el('p',{class:'sec-hint'}, item.moduleTitle));
+  card.appendChild(el('p',{class:'sec-hint'},'Perguntas abertas desta aula (para referência ao conversar/corrigir com o aluno):'));
+  item.lesson.openqs.forEach(q=>{
+    card.appendChild(el('div',{class:'qa'}, el('div',{class:'q'},q)));
+  });
+
+  const fbKey = email.toLowerCase()+'_'+n;
+  const existing = CACHE.feedback && CACHE.feedback[fbKey];
+  const fbBox = el('div',{class:'fbbox'});
+  fbBox.appendChild(el('label',{style:'font-size:12.5px;font-weight:700;'},'Pontuação (0-100, opcional)'));
+  const scoreInp = el('input',{type:'number', min:'0', max:'100', value: existing? existing.pontuacaoAjustada : ''});
+  fbBox.appendChild(scoreInp);
+  fbBox.appendChild(el('label',{style:'font-size:12.5px;font-weight:700;display:block;margin-top:10px;'},'Comentário / informação complementar'));
+  const ta = el('textarea',{}, existing ? existing.comentario : '');
+  fbBox.appendChild(ta);
+  const saveBtn = el('button',{class:'savebtn', style:'margin-top:10px;'},'Salvar devolutiva');
+  saveBtn.addEventListener('click', async ()=>{
+    saveBtn.disabled = true; saveBtn.textContent = 'Salvando...';
+    await fetch(APPS_SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({type:'feedback', email, lessonN:n, comentario:ta.value, pontuacaoAjustada:scoreInp.value})});
+    CACHE.feedback = CACHE.feedback || {};
+    CACHE.feedback[fbKey] = {comentario:ta.value, pontuacaoAjustada:scoreInp.value};
+    saveBtn.textContent = 'Salvo ✓';
+  });
+  fbBox.appendChild(saveBtn);
+  card.appendChild(fbBox);
+  box.appendChild(card);
+}
+
+document.getElementById('tab-cron').addEventListener('click', ()=>{
+  document.getElementById('tab-cron').classList.add('active');
+  document.getElementById('tab-corr').classList.remove('active');
+  document.getElementById('view-cron').classList.remove('hidden');
+  document.getElementById('view-corr').classList.add('hidden');
+});
+document.getElementById('tab-corr').addEventListener('click', ()=>{
+  document.getElementById('tab-corr').classList.add('active');
+  document.getElementById('tab-cron').classList.remove('active');
+  document.getElementById('view-corr').classList.remove('hidden');
+  document.getElementById('view-cron').classList.add('hidden');
+  renderCorrecoesList();
+});
+
+const gate = document.getElementById('view-gate');
+const codeInp = el('input',{type:'text', placeholder:'Código de acesso'});
+async function tryEnter(){
+  if(codeInp.value !== TEACHER_CODE){ codeInp.style.borderColor='#B3432F'; return; }
+  gate.classList.add('hidden');
+  document.getElementById('view-app').classList.remove('hidden');
+  await loadAll();
+  renderCronograma();
+}
+gate.appendChild(el('div',{class:'gatebox'},
+  el('h1',{style:'font-family:Georgia,serif;font-size:22px;'},'Acesso do Professor'),
+  codeInp,
+  el('button',{style:'width:100%;font:inherit;font-weight:700;font-size:14px;padding:12px;border-radius:7px;border:none;background:var(--gold);color:#fff;cursor:pointer;', onclick:tryEnter},'Entrar')
+));
+codeInp.addEventListener('keydown', e=>{ if(e.key==='Enter') tryEnter(); });
+</script>
+</body>
+</html>
