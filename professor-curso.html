@@ -172,9 +172,15 @@ function renderLessonReview(email, n){
   const card = el('section',{class:'card'});
   card.appendChild(el('h2',{}, 'Aula '+n+' — '+item.lesson.title));
   card.appendChild(el('p',{class:'sec-hint'}, item.moduleTitle));
-  card.appendChild(el('p',{class:'sec-hint'},'Perguntas abertas desta aula (para referência ao conversar/corrigir com o aluno):'));
-  item.lesson.openqs.forEach(q=>{
-    card.appendChild(el('div',{class:'qa'}, el('div',{class:'q'},q)));
+  card.appendChild(el('p',{class:'sec-hint'},'Respostas do aluno nas perguntas abertas desta aula:'));
+  const prog = CACHE.progresso[email.toLowerCase()] || {};
+  const abertas = (prog.respostasAbertas && prog.respostasAbertas[n]) || null;
+  item.lesson.openqs.forEach((q,i)=>{
+    const ans = abertas && abertas[i] ? abertas[i].a : '';
+    card.appendChild(el('div',{class:'qa'},
+      el('div',{class:'q'},q),
+      el('div',{class:'a', style:'margin-top:4px;'+(ans?'':'color:var(--ink-soft);font-style:italic;')}, ans || '(sem resposta enviada)')
+    ));
   });
 
   const fbKey = email.toLowerCase()+'_'+n;
