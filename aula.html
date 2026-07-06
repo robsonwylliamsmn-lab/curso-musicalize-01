@@ -254,7 +254,7 @@ function renderLesson(n){
     if(!COMPLETED.includes(n)) COMPLETED.push(n);
     try{
       await fetch(APPS_SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body: JSON.stringify({type:'progress', email:EMAIL, studentName:NOME, lessonIndex:n})});
+        body: JSON.stringify({type:'progress', email:EMAIL, studentName:NOME, lessonIndex:n, openAnswers: t.openqs.map((q,i)=>({q, a:openRefs[i].value}))})});
     }catch(e){ console.error(e); }
     renderSidebar(n);
     navRow.querySelector('.next').disabled = false;
