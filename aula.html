@@ -94,7 +94,7 @@ button.navbtn.next:hover{background:var(--gold-dark);color:#fff;}
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTuXuWk1BiQdUWdYsZNdmjQ5Nt00d653cK15DSVUhjSsM5qkF8yJ6F0iZ_6qfGUJSMNw/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw79vXg5L6oslYXJ2oDQmO9m1EMzAWBUMv8OVBlS7kk-63oCgrjpTFJcnsUobBkJK9O/exec";
 
 // Flatten all lessons into a single ordered list with global index
 const FLAT = [];
@@ -120,7 +120,18 @@ function el(tag, attrs={}, ...children){
 
 function getParam(name){ return new URLSearchParams(window.location.search).get(name); }
 
-function isUnlocked(n){ return n===1 || COMPLETED.includes(n-1) || COMPLETED.includes(n); }
+let CRONOGRAMA = {};
+let FEEDBACK = {};
+function isModuleReleased(moduleId){
+  const date = CRONOGRAMA[moduleId];
+  if(!date) return true;
+  return date <= new Date().toISOString().slice(0,10);
+}
+function isUnlocked(n){
+  const item = FLAT.find(f=>f.n===n);
+  if(!item || !isModuleReleased(item.moduleId)) return false;
+  return n===1 || COMPLETED.includes(n-1) || COMPLETED.includes(n);
+}
 
 function renderSidebar(currentN){
   const sb = document.getElementById('sidebar');
@@ -172,9 +183,13 @@ function renderLesson(n){
   content.innerHTML='';
   if(!item){ content.appendChild(el('p',{},'Aula não encontrada.')); return; }
   if(!isUnlocked(n)){
+    const notReleased = !isModuleReleased(item.moduleId);
+    const msg = notReleased
+      ? 'Este módulo será liberado em '+new Date(CRONOGRAMA[item.moduleId]+'T00:00:00').toLocaleDateString('pt-BR')+'.'
+      : 'Conclua a aula anterior para desbloquear esta.';
     content.appendChild(el('div',{class:'quiz'},
-      el('h3',{},'🔒 Aula bloqueada'),
-      el('p',{},'Conclua a aula anterior para desbloquear esta.')));
+      el('h3',{}, notReleased ? '📅 Aula programada' : '🔒 Aula bloqueada'),
+      el('p',{}, msg)));
     return;
   }
   const t = item.lesson;
@@ -247,6 +262,17 @@ function renderLesson(n){
 
   content.appendChild(quiz);
 
+  const fbKey = EMAIL.toLowerCase()+'_'+n;
+  const fb = FEEDBACK[fbKey];
+  if(fb && (fb.comentario || fb.pontuacaoAjustada)){
+    const fbCard = el('div',{class:'quiz', style:'background:#FBEFE0;border-color:var(--gold);'},
+      el('h3',{}, '💬 Devolutiva do professor'),
+      fb.pontuacaoAjustada ? el('p',{style:'font-weight:700;'}, 'Pontuação: '+fb.pontuacaoAjustada+'/100') : null,
+      fb.comentario ? el('p',{}, fb.comentario) : null
+    );
+    content.appendChild(fbCard);
+  }
+
   const navRow = el('div',{class:'navrow'},
     el('button',{class:'navbtn', onclick:()=>{ if(n>1) window.location='aula.html?n='+(n-1); }, disabled: n===1 ? '' : null}, '← Aula anterior'),
     el('button',{class:'navbtn next', onclick:()=>{ if(n<FLAT.length) window.location='aula.html?n='+(n+1); }, disabled: (!COMPLETED.includes(n) && n<FLAT.length) ? '' : null}, n<FLAT.length ? 'Próxima aula →' : 'Finalizar curso')
@@ -262,6 +288,8 @@ async function init(){
     const key = EMAIL.toLowerCase();
     const prog = json.progresso && json.progresso[key];
     COMPLETED = prog ? prog.completed : [];
+    CRONOGRAMA = json.cronograma || {};
+    FEEDBACK = json.feedback || {};
   }catch(e){ console.error(e); }
   document.getElementById('view-gate').classList.add('hidden');
   document.getElementById('view-app').classList.remove('hidden');
