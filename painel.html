@@ -60,7 +60,7 @@ h1{font-family:Georgia,serif;font-size:26px;margin:6px 0 18px;}
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTuXuWk1BiQdUWdYsZNdmjQ5Nt00d653cK15DSVUhjSsM5qkF8yJ6F0iZ_6qfGUJSMNw/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw79vXg5L6oslYXJ2oDQmO9m1EMzAWBUMv8OVBlS7kk-63oCgrjpTFJcnsUobBkJK9O/exec";
 
 const FLAT = [];
 COURSE.modules.forEach(mod=>{
@@ -82,12 +82,15 @@ function el(tag, attrs={}, ...children){
 async function loadDashboard(nome, email){
   document.getElementById('greeting').textContent = 'Olá, '+nome+'!';
   let completed = [];
+  let cronograma = {};
   try{
     const res = await fetch(APPS_SCRIPT_URL, {method:'GET'});
     const json = await res.json();
     const prog = json.progresso && json.progresso[email.toLowerCase()];
     completed = prog ? prog.completed : [];
+    cronograma = json.cronograma || {};
   }catch(e){ console.error(e); }
+  const today = new Date().toISOString().slice(0,10);
 
   const totalPct = Math.round((completed.length/FLAT.length)*100);
   document.getElementById('overallfill').style.width = totalPct+'%';
@@ -105,8 +108,14 @@ async function loadDashboard(nome, email){
     const modLessons = FLAT.filter(f=>f.moduleId===mod.id);
     const modDone = modLessons.filter(f=>completed.includes(f.n)).length;
     const modPct = Math.round((modDone/modLessons.length)*100);
-    const locked = !prevModDone;
+    const releaseDate = cronograma[mod.id];
+    const notReleased = releaseDate && releaseDate > today;
+    const locked = !prevModDone || notReleased;
     const firstN = modLessons[0].n;
+    let statusEl;
+    if(notReleased) statusEl = el('span',{class:'modlink'}, '📅 '+new Date(releaseDate+'T00:00:00').toLocaleDateString('pt-BR'));
+    else if(locked) statusEl = el('span',{class:'modlink'},'🔒 Bloqueado');
+    else statusEl = el('a',{class:'modlink', href:'aula.html?n='+firstN}, modPct===100?'Revisar →':'Acessar →');
     const row = el('div',{class:'modrow'+(locked?' locked':'')},
       el('div',{class:'modnum'}, String(mod.id).padStart(2,'0')),
       el('div',{class:'modinfo'},
@@ -114,7 +123,7 @@ async function loadDashboard(nome, email){
         el('div',{class:'modbar'}, el('div',{class:'modbarfill', style:'width:'+modPct+'%;'})),
         el('div',{class:'modmeta'}, modDone+'/'+modLessons.length+' aulas · '+modPct+'%')
       ),
-      locked ? el('span',{class:'modlink'},'🔒 Bloqueado') : el('a',{class:'modlink', href:'aula.html?n='+firstN}, modPct===100?'Revisar →':'Acessar →')
+      statusEl
     );
     modlist.appendChild(row);
     prevModDone = modDone === modLessons.length;
