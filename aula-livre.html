@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curso de Técnica Vocal — Aula (modo livre)</title>
+<script src="curso-data.js"></script>
+<style>
+:root{
+  --ink:#16202A; --ink-soft:#3C4A57; --paper:#FAF7F2; --paper-2:#F0EBE0;
+  --gold:#C98A3E; --gold-dark:#8C5C20; --teal:#2F6F6B; --teal-dark:#1E4E4B; --line:#DCD4C2;
+  --red:#B3432F; --green:#3C7A4A;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;}
+.applayout{display:flex;min-height:100vh;}
+aside.sidebar{width:280px;flex:0 0 auto;background:var(--ink);color:var(--paper);padding:20px 14px;overflow-y:auto;position:sticky;top:0;height:100vh;}
+aside.sidebar h2{font-family:Georgia,serif;font-size:16px;margin:0 0 4px;color:#fff;}
+aside.sidebar .courseeyebrow{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+.sidebar-progress{height:5px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;margin:14px 0 6px;}
+.sidebar-progress-fill{height:100%;background:var(--gold);}
+.sidebar-progress-label{font-size:11px;color:#AEB9BE;margin-bottom:16px;}
+.modblock{margin-bottom:6px;}
+.modblock summary{font-size:12px;font-weight:700;color:var(--gold);padding:8px 6px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;}
+.modblock summary::-webkit-details-marker{display:none;}
+.lessonlink{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;font-size:12.5px;text-decoration:none;color:#CBD3D8;margin-bottom:2px;}
+.lessonlink:hover{background:rgba(255,255,255,.06);}
+.lessonlink.current{background:var(--gold);color:#241500;font-weight:700;}
+.lessonlink.locked{color:#5C6870;cursor:not-allowed;}
+.lessonlink .dot{flex:0 0 auto;width:16px;text-align:center;font-size:11px;}
+main.content{flex:1;min-width:0;padding:34px 30px 90px;max-width:820px;}
+.lessontop{margin-bottom:20px;}
+.lessontop .eyebrow{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dark);font-weight:700;}
+.lessontop h1{font-family:Georgia,serif;font-size:26px;margin:6px 0 0;}
+.slide-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0;}
+@media(max-width:700px){.slide-grid{grid-template-columns:1fr;}}
+.infocard{border:1px solid var(--line);border-left-width:4px;border-radius:10px;padding:16px 18px;background:#fff;}
+.infocard.sys-ar{border-left-color:#3B7DBF;}
+.infocard.sys-lar{border-left-color:var(--gold);}
+.infocard.sys-corpo{border-left-color:var(--teal);}
+.syslabel{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:10px;margin-bottom:6px;}
+.sys-ar .syslabel{background:#E7F0FA;color:#2C5C8A;}
+.sys-lar .syslabel{background:#FBEFE0;color:var(--gold-dark);}
+.sys-corpo .syslabel{background:#E1F0EE;color:var(--teal-dark);}
+.infocard .icon{font-size:20px;display:block;margin-bottom:6px;}
+.infocard h3{font-size:13.5px;margin:0 0 6px;font-family:Georgia,serif;}
+.infocard p{font-size:13px;color:var(--ink-soft);margin:0;}
+.profnote{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink-soft);}
+.profnote a{color:var(--teal-dark);font-weight:700;}
+body.prof-mode .profnote{display:block;}
+.callout{border-left:3px solid var(--gold);background:var(--paper-2);padding:12px 16px;border-radius:0 8px 8px 0;font-size:13.5px;margin-bottom:20px;}
+.quiz{border:1px solid var(--line);border-radius:12px;margin-top:6px;padding:22px 24px 26px;background:#fff;}
+.quiz h3{font-family:Georgia,serif;font-size:16px;margin:0 0 4px;}
+.quiz .qhint{font-size:12px;color:var(--ink-soft);margin:0 0 16px;}
+.mcq{margin-bottom:18px;}
+.mcq .qtext{font-size:13.5px;font-weight:700;margin-bottom:8px;}
+.mcq .opts{display:flex;flex-direction:column;gap:6px;}
+.mcq label{display:flex;gap:8px;align-items:center;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--paper);cursor:pointer;}
+.mcq label.correct{border-color:var(--green);background:#E6F1E9;}
+.mcq label.wrong{border-color:var(--red);background:#FBE7E3;}
+.openq{margin-bottom:16px;}
+.openq label{display:block;font-size:13.5px;font-weight:700;margin-bottom:6px;}
+.openq textarea{width:100%;min-height:64px;font:inherit;font-size:13.5px;padding:9px 11px;border:1px solid var(--line);border-radius:7px;resize:vertical;}
+.quizfeedback{font-size:13px;padding:9px 12px;border-radius:7px;margin-top:6px;display:none;}
+.quizfeedback.show{display:block;}
+.quizfeedback.ok{background:#E6F1E9;color:var(--green);}
+.quizfeedback.partial{background:#FBEFE0;color:var(--gold-dark);}
+button.checkbtn,button.navbtn{font:inherit;font-weight:700;font-size:13px;padding:10px 18px;border-radius:7px;border:none;background:var(--teal);color:#fff;cursor:pointer;}
+button.checkbtn:hover,button.navbtn:hover{background:var(--teal-dark);}
+button.navbtn.next{background:var(--gold);color:#241500;}
+button.navbtn.next:hover{background:var(--gold-dark);color:#fff;}
+.navrow{display:flex;justify-content:space-between;margin-top:24px;}
+.modebtn{position:fixed;top:16px;right:16px;font:inherit;font-size:12px;font-weight:700;padding:8px 14px;border-radius:20px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;z-index:9;}
+.modebtn.active{background:var(--gold);border-color:var(--gold);color:#241500;}
+.hidden{display:none !important;}
+.gatebox{max-width:380px;margin:80px auto;text-align:center;}
+.gatebox input{width:100%;font:inherit;font-size:14px;padding:11px 12px;border-radius:7px;border:1px solid var(--line);margin-bottom:9px;}
+@media(max-width:800px){ aside.sidebar{position:fixed;left:-280px;transition:left .2s;z-index:20;} aside.sidebar.open{left:0;} main.content{padding:70px 16px 90px;} }
+.hamburger{display:none;}
+@media(max-width:800px){ .hamburger{display:block;position:fixed;top:14px;left:14px;z-index:21;background:var(--ink);color:#fff;border:none;border-radius:7px;padding:9px 12px;font-size:14px;} }
+</style>
+</head>
+<body>
+
+<div id="view-gate"></div>
+
+<div id="view-app" class="hidden">
+  <button class="hamburger" id="hamburger">☰</button>
+  <button class="modebtn" id="modebtn">👩‍🏫 Professor</button>
+  <div class="applayout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw79vXg5L6oslYXJ2oDQmO9m1EMzAWBUMv8OVBlS7kk-63oCgrjpTFJcnsUobBkJK9O/exec";
+
+// Flatten all lessons into a single ordered list with global index
+const FLAT = [];
+COURSE.modules.forEach(mod=>{
+  mod.lessons.forEach((lesson, li)=>{
+    FLAT.push({ n: FLAT.length+1, moduleId: mod.id, moduleTitle: mod.title, lesson });
+  });
+});
+
+let EMAIL = '', NOME = '', COMPLETED = [];
+
+function el(tag, attrs={}, ...children){
+  const e = document.createElement(tag);
+  for(const k in attrs){
+    if(attrs[k]===null || attrs[k]===undefined) continue;
+    if(k==='html') e.innerHTML = attrs[k];
+    else if(k.startsWith('on')) e.addEventListener(k.slice(2), attrs[k]);
+    else e.setAttribute(k, attrs[k]);
+  }
+  children.flat().forEach(c=>{ if(c) e.appendChild(typeof c==='string'?document.createTextNode(c):c); });
+  return e;
+}
+
+function getParam(name){ return new URLSearchParams(window.location.search).get(name); }
+
+let CRONOGRAMA = {};
+let FEEDBACK = {};
+function isModuleReleased(moduleId){
+  const date = CRONOGRAMA[moduleId];
+  if(!date) return true;
+  return date <= new Date().toISOString().slice(0,10);
+}
+function isUnlocked(n){ return true; }
+
+
+function renderSidebar(currentN){
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML='';
+  sb.appendChild(el('div',{class:'courseeyebrow'},'Musicalize'));
+  sb.appendChild(el('h2',{},COURSE.title));
+  const pct = Math.round((COMPLETED.length/FLAT.length)*100);
+  sb.appendChild(el('div',{class:'sidebar-progress'}, el('div',{class:'sidebar-progress-fill', style:'width:'+pct+'%;'})));
+  sb.appendChild(el('div',{class:'sidebar-progress-label'}, COMPLETED.length+' de '+FLAT.length+' aulas concluídas ('+pct+'%)'));
+
+  COURSE.modules.forEach(mod=>{
+    const details = el('details',{class:'modblock', open: mod.lessons.some((l,li)=>{
+      const item = FLAT.find(f=>f.moduleId===mod.id && f.lesson===l);
+      return item && item.n===currentN;
+    }) ? true : undefined});
+    details.appendChild(el('summary',{}, mod.title));
+    mod.lessons.forEach(lesson=>{
+      const item = FLAT.find(f=>f.moduleId===mod.id && f.lesson===lesson);
+      const n = item.n;
+      const unlocked = isUnlocked(n);
+      const done = COMPLETED.includes(n);
+      const dot = done ? '✓' : (unlocked ? '○' : '🔒');
+      const link = el('a',{class:'lessonlink'+(n===currentN?' current':'')+(unlocked?'':' locked'),
+        href: unlocked ? ('aula-livre.html?n='+n) : '#'},
+        el('span',{class:'dot'},dot), 'Aula '+n+' — '+lesson.title.replace(/\s*\(Aula\s*\d+\)/,''));
+      if(!unlocked) link.addEventListener('click', e=>e.preventDefault());
+      details.appendChild(link);
+    });
+    sb.appendChild(details);
+  });
+}
+
+function fieldCard(c){
+  const sysLabel = {ar:'Sistema Respiratório', lar:'Sistema Laríngeo', corpo:'Corpo e Mente'}[c.sys] || '';
+  const card = el('div',{class:'infocard sys-'+(c.sys||'corpo')},
+    el('span',{class:'syslabel'}, sysLabel),
+    el('span',{class:'icon'},c.icon), el('h3',{},c.h), el('p',{},c.p)
+  );
+  const noteText = c.prof || 'Espaço reservado para aprofundamento e link de referência (a preencher).';
+  const note = el('div',{class:'profnote'}, noteText+' ');
+  if(c.link) note.appendChild(el('a',{href:c.link,target:'_blank'},'Leia mais →'));
+  card.appendChild(note);
+  return card;
+}
+
+function renderLesson(n){
+  const item = FLAT.find(f=>f.n===n);
+  const content = document.getElementById('content');
+  content.innerHTML='';
+  if(!item){ content.appendChild(el('p',{},'Aula não encontrada.')); return; }
+  if(!isUnlocked(n)){
+    const notReleased = !isModuleReleased(item.moduleId);
+    const msg = notReleased
+      ? 'Este módulo será liberado em '+new Date(CRONOGRAMA[item.moduleId]+'T00:00:00').toLocaleDateString('pt-BR')+'.'
+      : 'Conclua a aula anterior para desbloquear esta.';
+    content.appendChild(el('div',{class:'quiz'},
+      el('h3',{}, notReleased ? '📅 Aula programada' : '🔒 Aula bloqueada'),
+      el('p',{}, msg)));
+    return;
+  }
+  const t = item.lesson;
+  content.appendChild(el('div',{class:'lessontop'},
+    el('div',{class:'eyebrow'}, item.moduleTitle+' · Aula '+n+' de '+FLAT.length),
+    el('h1',{}, t.title)
+  ));
+  const grid = el('div',{class:'slide-grid'});
+  t.cards.forEach(c=>grid.appendChild(fieldCard(c)));
+  content.appendChild(grid);
+  content.appendChild(el('div',{class:'callout', html:t.callout}));
+
+  const quiz = el('div',{class:'quiz'});
+  quiz.appendChild(el('h3',{},'Quiz — '+t.title));
+  quiz.appendChild(el('p',{class:'qhint'},'Responda tudo e clique em Verificar para concluir a aula.'));
+  const mcqRefs = [];
+  t.mcqs.forEach((m,qi)=>{
+    const wrap = el('div',{class:'mcq'});
+    wrap.appendChild(el('div',{class:'qtext'}, (qi+1)+'. '+m.q));
+    const opts = el('div',{class:'opts'});
+    const optLabels = [];
+    m.opts.forEach((optText,oi)=>{
+      const lbl = el('label',{}, el('input',{type:'radio',name:'mcq'+qi,value:String(oi)}), optText);
+      opts.appendChild(lbl); optLabels.push(lbl);
+    });
+    wrap.appendChild(opts);
+    quiz.appendChild(wrap);
+    mcqRefs.push({correct:m.correct, labels:optLabels});
+  });
+  const openRefs = [];
+  t.openqs.forEach(q=>{
+    const wrap = el('div',{class:'openq'});
+    const ta = el('textarea',{});
+    wrap.appendChild(el('label',{},q)); wrap.appendChild(ta);
+    quiz.appendChild(wrap);
+    openRefs.push(ta);
+  });
+  const feedback = el('div',{class:'quizfeedback'});
+  const alreadyDone = COMPLETED.includes(n);
+  const checkBtn = el('button',{class:'checkbtn'}, alreadyDone ? 'Aula já concluída' : 'Verificar respostas');
+  if(alreadyDone) checkBtn.disabled = true;
+  quiz.appendChild(checkBtn); quiz.appendChild(feedback);
+
+  checkBtn.addEventListener('click', async ()=>{
+    let correctCount=0, allMcq=true;
+    mcqRefs.forEach(ref=>{
+      const checked = ref.labels.findIndex(l=>l.querySelector('input').checked);
+      if(checked===-1){ allMcq=false; return; }
+      ref.labels.forEach((l,i)=>{ l.classList.remove('correct','wrong');
+        if(i===ref.correct) l.classList.add('correct'); else if(i===checked) l.classList.add('wrong'); });
+      if(checked===ref.correct) correctCount++;
+    });
+    const allOpen = openRefs.every(ta=>ta.value.trim()!=='');
+    if(!allMcq || !allOpen){
+      feedback.className='quizfeedback show partial';
+      feedback.textContent='Responda todas as perguntas antes de verificar.';
+      return;
+    }
+    feedback.className='quizfeedback show '+(correctCount===mcqRefs.length?'ok':'partial');
+    feedback.textContent = correctCount+' de '+mcqRefs.length+' corretas. Aula concluída!';
+    checkBtn.disabled=true; checkBtn.textContent='Concluído';
+    if(!COMPLETED.includes(n)) COMPLETED.push(n);
+    try{
+      await fetch(APPS_SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({type:'progress', email:EMAIL, studentName:NOME, lessonIndex:n, openAnswers: t.openqs.map((q,i)=>({q, a:openRefs[i].value}))})});
+    }catch(e){ console.error(e); }
+    renderSidebar(n);
+    navRow.querySelector('.next').disabled = false;
+  });
+
+  content.appendChild(quiz);
+
+  const fbKey = EMAIL.toLowerCase()+'_'+n;
+  const fb = FEEDBACK[fbKey];
+  if(fb && (fb.comentario || fb.pontuacaoAjustada)){
+    const fbCard = el('div',{class:'quiz', style:'background:#FBEFE0;border-color:var(--gold);'},
+      el('h3',{}, '💬 Devolutiva do professor'),
+      fb.pontuacaoAjustada ? el('p',{style:'font-weight:700;'}, 'Pontuação: '+fb.pontuacaoAjustada+'/100') : null,
+      fb.comentario ? el('p',{}, fb.comentario) : null
+    );
+    content.appendChild(fbCard);
+  }
+
+  const navRow = el('div',{class:'navrow'},
+    el('button',{class:'navbtn', onclick:()=>{ if(n>1) window.location='aula-livre.html?n='+(n-1); }, disabled: n===1 ? '' : null}, '← Aula anterior'),
+    el('button',{class:'navbtn next', onclick:()=>{ if(n<FLAT.length) window.location='aula-livre.html?n='+(n+1); }, disabled: null}, n<FLAT.length ? 'Próxima aula →' : 'Finalizar curso')
+  );
+  content.appendChild(navRow);
+}
+
+async function init(){
+  const n = parseInt(getParam('n')||'1',10);
+  try{
+    const res = await fetch(APPS_SCRIPT_URL, {method:'GET'});
+    const json = await res.json();
+    const key = EMAIL.toLowerCase();
+    const prog = json.progresso && json.progresso[key];
+    COMPLETED = prog ? prog.completed : [];
+    CRONOGRAMA = json.cronograma || {};
+    FEEDBACK = json.feedback || {};
+  }catch(e){ console.error(e); }
+  document.getElementById('view-gate').classList.add('hidden');
+  document.getElementById('view-app').classList.remove('hidden');
+  renderSidebar(n);
+  renderLesson(n);
+}
+
+function startGate(){
+  const gate = document.getElementById('view-gate');
+  const savedNome = localStorage.getItem('curso_nome')||'';
+  const savedEmail = localStorage.getItem('curso_email')||'';
+  const nomeInp = el('input',{type:'text',placeholder:'Seu nome',value:savedNome});
+  const emailInp = el('input',{type:'email',placeholder:'Seu e-mail',value:savedEmail});
+  const btn = el('button',{class:'navbtn next',style:'width:100%;'},'Entrar no curso');
+  gate.appendChild(el('div',{class:'gatebox'},
+    el('h2',{style:'font-family:Georgia,serif;'},'Curso de Técnica Vocal'),
+    nomeInp, emailInp, btn));
+  btn.addEventListener('click', ()=>{
+    const nome = nomeInp.value.trim(), email = emailInp.value.trim();
+    if(!nome || !email.includes('@')) return;
+    localStorage.setItem('curso_nome', nome);
+    localStorage.setItem('curso_email', email);
+    EMAIL = email; NOME = nome;
+    init();
+  });
+  if(savedNome && savedEmail){ EMAIL = savedEmail; NOME = savedNome; init(); }
+}
+
+document.getElementById('modebtn').addEventListener('click', function(){
+  document.body.classList.toggle('prof-mode');
+  this.classList.toggle('active');
+});
+document.getElementById('hamburger').addEventListener('click', ()=>{
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+startGate();
+</script>
+</body>
+</html>
