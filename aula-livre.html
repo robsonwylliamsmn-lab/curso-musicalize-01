@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Curso de Técnica Vocal — Aula (modo livre)</title>
+<title>Capacitação Profissional — Aula (modo livre)</title>
 <script src="curso-data.js"></script>
 <style>
 :root{
@@ -302,7 +302,7 @@ function startGate(){
   const emailInp = el('input',{type:'email',placeholder:'Seu e-mail',value:savedEmail});
   const btn = el('button',{class:'navbtn next',style:'width:100%;'},'Entrar no curso');
   gate.appendChild(el('div',{class:'gatebox'},
-    el('h2',{style:'font-family:Georgia,serif;'},'Curso de Técnica Vocal'),
+    el('h2',{style:'font-family:Georgia,serif;'},'Capacitação Profissional'),
     nomeInp, emailInp, btn));
   btn.addEventListener('click', ()=>{
     const nome = nomeInp.value.trim(), email = emailInp.value.trim();
