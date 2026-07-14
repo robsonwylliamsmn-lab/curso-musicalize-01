@@ -1,5 +1,5 @@
 const COURSE = {
-  title: "Curso de Técnica Vocal",
+  title: "Capacitação Profissional",
   modules: [
     { id:1, title:"Fundamentos", lessons: [
 {
